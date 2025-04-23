@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payroll Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .tab-button.active { color: #2563eb; }
+    .toggle-switch {
+      appearance: none;
+      width: 2.5rem;
+      height: 1.3rem;
+      background: #ccc;
+      border-radius: 1rem;
+      position: relative;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .toggle-switch:checked {
+      background: #2563eb;
+    }
+    .toggle-switch::before {
+      content: '';
+      position: absolute;
+      width: 1.1rem;
+      height: 1.1rem;
+      background: white;
+      border-radius: 50%;
+      top: 0.1rem;
+      left: 0.1rem;
+      transition: transform 0.3s;
+    }
+    .toggle-switch:checked::before {
+      transform: translateX(1.2rem);
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 font-sans">
+  <div class="flex justify-around mb-4">
+    <button class="tab-button" onclick="showTab('payrolls')">Payrolls</button>
+    <button class="tab-button" onclick="showTab('reports')">Reports</button>
+  </div>
+
+  <!-- Payrolls Tab -->
+  <div id="payrolls" class="tab">
+    <button onclick="openModal()" class="bg-blue-500 text-white px-4 py-2 rounded mb-4">Add</button>
+    <div id="payrollList" class="space-y-2"></div>
+  </div>
+
+  <!-- Reports Tab -->
+  <div id="reports" class="tab hidden">
+    <div class="flex space-x-2 mb-4">
+      <label><input type="checkbox" class="toggle-switch" checked onchange="toggleDataset('Regular')"> Reg</label>
+      <label><input type="checkbox" class="toggle-switch" checked onchange="toggleDataset('Tip')"> Tip</label>
+      <label><input type="checkbox" class="toggle-switch" checked onchange="toggleDataset('Extras')"> Extra</label>
+      <label><input type="checkbox" class="toggle-switch" checked onchange="toggleDataset('Total')"> Total</label>
+    </div>
+    <div class="flex justify-center"><canvas id="payrollChart" style="width:100%; max-width:600px; height:320px;"></canvas></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="flex fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white p-2 rounded-lg max-w-md w-full" style="transform: scale(0.8); transform-origin: center center;">
+      <h2 class="text-lg font-bold mb-1">Add Payroll</h2>
+      <input type="text" id="timeFrame" class="w-full border mb-2 p-1 rounded" placeholder="Time Frame (e.g., Apr 1-15)">
+      <div class="mb-1 font-semibold">Week 1</div>
+      <div id="w1Inputs"></div>
+      <div class="flex justify-between items-center w-full font-semibold mt-1 mb-3">
+  <span>Week 1 Total:</span>
+  <input type="text" id="w1_week_total" class="w-20 border p-1 rounded text-right font-bold" readonly value="$0.00"/>
+</div>
+
+      <div class="mb-1 font-semibold">Week 2</div>
+      <div id="w2Inputs"></div>
+      <div class="flex justify-between items-center w-full font-semibold mt-1 mb-3">
+  <span>Week 2 Total:</span>
+  <input type="text" id="w2_week_total" class="w-20 border p-1 rounded text-right font-bold" readonly value="$0.00"/>
+</div>
+
+      <div class="border-t pt-3 mt-3 space-y-2">
+        <div class="font-bold text-lg text-center mb-1">Grand Totals</div>
+        <div class="flex justify-between items-center w-full"><span>Regular:</span><input type="text" id="combined_regular_total" class="w-20 border p-1 rounded text-right font-bold" readonly value="$0.00"/></div>
+        <div class="flex justify-between items-center w-full"><span>Tip:</span><input type="text" id="combined_tip_total" class="w-20 border p-1 rounded text-right font-bold" readonly value="$0.00"/></div>
+        <div class="flex justify-between items-center w-full"><span>Extras:</span><input type="text" id="combined_extras_total" class="w-20 border p-1 rounded text-right font-bold" readonly value="$0.00"/></div>
+        <div class="flex justify-between items-center font-bold text-lg mt-2 w-full"><span>Grand Total:</span><input type="text" id="grand_total_display" class="w-20 border p-1 rounded text-right font-bold" readonly value="$0.00"/></div>
+      </div>
+      <div class="text-right">
+        <button onclick="savePayroll()" class="bg-green-500 text-white px-3 py-1 rounded mt-4">Save</button>
+        <button onclick="closeModal()" class="ml-2 text-gray-600">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="payroll_app.js"></script>
+</body>
+</html>
